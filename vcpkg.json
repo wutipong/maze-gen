@@ -1,0 +1,7 @@
+{
+    "name": "maze-gen",
+    "version-string": "0.1.0-dev",
+    "dependencies": [
+        "catch2"
+    ]
+}
