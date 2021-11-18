@@ -9,7 +9,11 @@ set(
 # set the project name
 project(maze-gen)
 
-add_library(maze-gen src/maze.cpp)
+add_library(
+    maze-gen 
+    src/maze.cpp
+    src/maze_context.cpp
+)
 target_include_directories(maze-gen PUBLIC include)
 
 # Tests
@@ -18,6 +22,7 @@ add_executable(
     tests 
     test/main.cpp 
     test/maze.cpp
+    test/maze_context.cpp
 )
 target_link_libraries(tests PRIVATE Catch2::Catch2 maze-gen)
 target_include_directories(tests PRIVATE Catch2::Catch2)
