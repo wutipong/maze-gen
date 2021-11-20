@@ -15,6 +15,7 @@ add_library(
     maze-gen 
     src/maze.cpp
     src/maze_context.cpp
+    
 )
 target_include_directories(maze-gen PUBLIC include)
 

@@ -1,4 +1,4 @@
-#include "maze.hpp"
+#include "maze_context.hpp"
 #include <random>
 #include <set>
 
@@ -88,9 +88,9 @@ MazeContext::Direction MazeContext::RandomDirectionFuncImpl()
     static std::random_device r;
 
     std::default_random_engine e(r());
-    std::uniform_int_distribution<Direction> uniform_dist(static_cast<Direction>(0), Direction::Count);
+    std::uniform_int_distribution<int> uniform_dist(0, static_cast<size_t>(Direction::Count));
 
-    return uniform_dist(e);
+    return static_cast<Direction>(uniform_dist(e));
 }
 
 MazeContext::JoinResult MazeContext::RandomJoin(RandomCellFunc randomCell, RandomDirectionFunc randomDirection)
