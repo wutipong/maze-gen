@@ -22,14 +22,12 @@ struct Maze
     Maze(int row, int column) : row(row), column(column){};
 };
 
-struct MazeContext
+class MazeContext
 {
-    const size_t row;
-    const size_t column;
-    const size_t cellCount;
+  public:
+    typedef std::set<size_t> Set;
+    typedef std::shared_ptr<Set> SetPtr;
 
-    static constexpr size_t InvalidCell = -1; 
-    
     enum class Direction
     {
         North,
@@ -37,13 +35,20 @@ struct MazeContext
         East,
         West,
     };
+    static constexpr size_t InvalidCell = -1;
 
-    std::vector<std::shared_ptr<std::set<size_t>>> disjointSets;
+    const size_t row;
+    const size_t column;
+    const size_t cellCount;
 
-    MazeContext(size_t row, size_t column);
+  private:
+    std::vector<SetPtr> disjointSets;
+    int setCount;
+
+  public:
+    MazeContext(size_t column, size_t row);
 
     bool JoinSet(size_t to, size_t from);
-
     size_t GetAdjacentCell(size_t cell, Direction direction);
 };
 } // namespace MazeGen

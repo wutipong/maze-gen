@@ -6,6 +6,8 @@ set(
     "Vcpkg toolchain file"
 )
 
+set(CMAKE_CXX_STANDARD 20)
+
 # set the project name
 project(maze-gen)
 
