@@ -1,4 +1,5 @@
 #include "maze.hpp"
+#include <random>
 #include <set>
 
 using namespace MazeGen;
@@ -16,7 +17,7 @@ MazeContext::MazeContext(size_t column, size_t row)
     }
 }
 
-bool MazeContext::JoinSet(size_t to, size_t from)
+bool MazeContext::TryJoinSet(size_t to, size_t from)
 {
     auto &toSet = disjointSets[to];
     auto &fromSet = disjointSets[from];
@@ -70,4 +71,38 @@ size_t MazeContext::GetAdjacentCell(size_t cell, Direction direction)
         return InvalidCell;
 
     return (y * column) + x;
+}
+
+size_t MazeContext::RandomCellFuncImpl(size_t maxCell)
+{
+    static std::random_device r;
+
+    std::default_random_engine e(r());
+    std::uniform_int_distribution<size_t> uniform_dist(0, maxCell);
+
+    return uniform_dist(e);
+}
+
+MazeContext::Direction MazeContext::RandomDirectionFuncImpl()
+{
+    static std::random_device r;
+
+    std::default_random_engine e(r());
+    std::uniform_int_distribution<Direction> uniform_dist(static_cast<Direction>(0), Direction::Count);
+
+    return uniform_dist(e);
+}
+
+MazeContext::JoinResult MazeContext::RandomJoin(RandomCellFunc randomCell, RandomDirectionFunc randomDirection)
+{
+    while (true)
+    {
+        auto fromCell = randomCell(cellCount);
+        auto direction = randomDirection();
+        auto toCell = GetAdjacentCell(fromCell, direction);
+        if (TryJoinSet(toCell, fromCell))
+        {
+            return {fromCell, toCell, direction};
+        }
+    }
 }

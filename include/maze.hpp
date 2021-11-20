@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 
 namespace MazeGen
@@ -25,16 +26,27 @@ struct Maze
 class MazeContext
 {
   public:
-    typedef std::set<size_t> Set;
-    typedef std::shared_ptr<Set> SetPtr;
-
     enum class Direction
     {
         North,
         South,
         East,
         West,
+        Count,
     };
+
+    typedef std::set<size_t> Set;
+    typedef std::shared_ptr<Set> SetPtr;
+    typedef size_t (*RandomCellFunc)(size_t maxCell);
+    typedef Direction (*RandomDirectionFunc)();
+
+    struct JoinResult
+    {
+        size_t from;
+        size_t to;
+        Direction direction;
+    };
+
     static constexpr size_t InvalidCell = -1;
 
     const size_t row;
@@ -46,9 +58,15 @@ class MazeContext
     int setCount;
 
   public:
-    MazeContext(size_t column, size_t row);
+    static size_t RandomCellFuncImpl(size_t maxCell);
+    static Direction RandomDirectionFuncImpl();
 
-    bool JoinSet(size_t to, size_t from);
+    MazeContext(size_t column, size_t row);
+    bool TryJoinSet(size_t to, size_t from);
+
+    JoinResult RandomJoin(RandomCellFunc randomCell = RandomCellFuncImpl,
+                          RandomDirectionFunc randomDirection = RandomDirectionFuncImpl);
+
     size_t GetAdjacentCell(size_t cell, Direction direction);
 };
 } // namespace MazeGen
