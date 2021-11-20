@@ -1,21 +1,23 @@
-#include "maze.hpp"
+#include "maze_context.hpp"
+#include <random>
 #include <set>
 
 using namespace MazeGen;
 
-MazeContext::MazeContext(size_t row, size_t column) : row(row), column(column), cellCount(row * column)
+MazeContext::MazeContext(size_t column, size_t row)
+    : row(row), column(column), cellCount(row * column), setCount(cellCount)
 {
     disjointSets.reserve(cellCount);
     for (size_t i = 0; i < cellCount; i++)
     {
-        std::shared_ptr<std::set<size_t>> ptr{new std::set<size_t>()};
+        auto ptr = std::make_shared<Set>();
         ptr->emplace(i);
 
         disjointSets.emplace_back(ptr);
     }
 }
 
-bool MazeContext::JoinSet(size_t to, size_t from)
+bool MazeContext::TryJoinSet(size_t to, size_t from)
 {
     auto &toSet = disjointSets[to];
     auto &fromSet = disjointSets[from];
@@ -28,9 +30,10 @@ bool MazeContext::JoinSet(size_t to, size_t from)
         }
     }
 
-    toSet->emplace(fromSet->begin(), fromSet->end());
+    toSet->insert(fromSet->begin(), fromSet->end());
 
     fromSet = toSet;
+    setCount = setCount - 1;
 
     return true;
 }
@@ -40,8 +43,8 @@ size_t MazeContext::GetAdjacentCell(size_t cell, Direction direction)
     if (cell < 0 || cell >= cellCount)
         return InvalidCell;
 
-    size_t x = cell % row;
-    size_t y = cell / row;
+    size_t x = cell % column;
+    size_t y = cell / column;
 
     switch (direction)
     {
@@ -63,9 +66,43 @@ size_t MazeContext::GetAdjacentCell(size_t cell, Direction direction)
 
     if (x < 0 || x >= column)
         return InvalidCell;
-        
+
     if (y < 0 || y >= row)
         return InvalidCell;
 
     return (y * column) + x;
+}
+
+size_t MazeContext::RandomCellFuncImpl(size_t maxCell)
+{
+    static std::random_device r;
+
+    std::default_random_engine e(r());
+    std::uniform_int_distribution<size_t> uniform_dist(0, maxCell);
+
+    return uniform_dist(e);
+}
+
+MazeContext::Direction MazeContext::RandomDirectionFuncImpl()
+{
+    static std::random_device r;
+
+    std::default_random_engine e(r());
+    std::uniform_int_distribution<int> uniform_dist(0, static_cast<size_t>(Direction::Count));
+
+    return static_cast<Direction>(uniform_dist(e));
+}
+
+MazeContext::JoinResult MazeContext::RandomJoin(RandomCellFunc randomCell, RandomDirectionFunc randomDirection)
+{
+    while (true)
+    {
+        auto fromCell = randomCell(cellCount);
+        auto direction = randomDirection();
+        auto toCell = GetAdjacentCell(fromCell, direction);
+        if (TryJoinSet(toCell, fromCell))
+        {
+            return {fromCell, toCell, direction};
+        }
+    }
 }

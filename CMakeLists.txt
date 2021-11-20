@@ -6,6 +6,8 @@ set(
     "Vcpkg toolchain file"
 )
 
+set(CMAKE_CXX_STANDARD 20)
+
 # set the project name
 project(maze-gen)
 
@@ -13,6 +15,7 @@ add_library(
     maze-gen 
     src/maze.cpp
     src/maze_context.cpp
+    
 )
 target_include_directories(maze-gen PUBLIC include)
 
