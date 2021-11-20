@@ -6,12 +6,21 @@
 
 namespace MazeGen
 {
+typedef size_t Connection;
+
+constexpr Connection ToNorth = 1;
+constexpr Connection ToSouth = 2;
+constexpr Connection ToEast = 4;
+constexpr Connection ToWest = 8;
+
 struct Cell
 {
     Cell *pNorth{nullptr};
     Cell *pSouth{nullptr};
     Cell *pEast{nullptr};
     Cell *pWest{nullptr};
+
+    Connection connections = 0;
 };
 
 struct Maze

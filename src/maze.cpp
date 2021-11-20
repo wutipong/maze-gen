@@ -24,9 +24,33 @@ Cell *&Adjacent(Cell &cell, Direction direction)
 
     throw 0;
 }
+
+void AddConnection(Cell &from, Cell &to, Direction direction)
+{
+    switch (direction)
+    {
+    case Direction::North:
+        from.connections |= MazeGen::ToNorth;
+        break;
+
+    case Direction::South:
+        from.connections |= MazeGen::ToSouth;
+        break;
+
+    case Direction::East:
+        from.connections |= MazeGen::ToEast;
+        break;
+
+    case Direction::West:
+        from.connections |= MazeGen::ToWest;
+        break;
+    }
+
+    Adjacent(from, direction) = &to;
+}
 } // namespace
 
-Maze Generate(size_t column, size_t row, OnProgress onProgressCallback)
+Maze MazeGen::Generate(size_t column, size_t row, OnProgress onProgressCallback)
 {
     Maze maze{column, row};
     MazeContext ctx = MazeContext{column, row};
@@ -38,14 +62,17 @@ Maze Generate(size_t column, size_t row, OnProgress onProgressCallback)
         if (onProgressCallback != nullptr)
             onProgressCallback(progress, total);
 
-        auto result = ctx.RandomJoin();
+        auto [from, to, direction, opposite] = ctx.RandomJoin();
 
-        auto &fromCell = maze.cells[result.from];
-        auto &toCell = maze.cells[result.to];
+        auto &fromCell = maze.cells[from];
+        auto &toCell = maze.cells[to];
 
-        Adjacent(fromCell, result.direction) = &toCell;
-        Adjacent(toCell, result.opposite) = &fromCell;
+        AddConnection(fromCell, toCell, direction);
+        AddConnection(toCell, fromCell, opposite);
     }
+
+    if (onProgressCallback != nullptr)
+        onProgressCallback(total, total);
 
     return maze;
 }

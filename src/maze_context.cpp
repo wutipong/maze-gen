@@ -19,6 +19,12 @@ MazeContext::MazeContext(size_t column, size_t row)
 
 bool MazeContext::TryJoinSet(size_t to, size_t from)
 {
+    if (to == MazeContext::InvalidCell)
+        return false;
+
+    if (from == MazeContext::InvalidCell)
+        return false;
+
     auto &toSet = disjointSets[to];
     auto &fromSet = disjointSets[from];
 
