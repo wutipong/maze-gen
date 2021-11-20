@@ -83,7 +83,7 @@ size_t MazeContext::RandomCellFuncImpl(size_t maxCell)
     return uniform_dist(e);
 }
 
-MazeContext::Direction MazeContext::RandomDirectionFuncImpl()
+Direction MazeContext::RandomDirectionFuncImpl()
 {
     static std::random_device r;
 
@@ -102,7 +102,24 @@ MazeContext::JoinResult MazeContext::RandomJoin(RandomCellFunc randomCell, Rando
         auto toCell = GetAdjacentCell(fromCell, direction);
         if (TryJoinSet(toCell, fromCell))
         {
-            return {fromCell, toCell, direction};
+            return {fromCell, toCell, direction, Opposite(direction)};
         }
     }
+}
+
+Direction MazeGen::Opposite(Direction direction)
+{
+    switch (direction)
+    {
+    case Direction::North:
+        return Direction::South;
+    case Direction::South:
+        return Direction::North;
+    case Direction::East:
+        return Direction::West;
+    case Direction::West:
+        return Direction::East;
+    }
+
+    return Direction::Count;
 }

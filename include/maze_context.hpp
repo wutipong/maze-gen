@@ -6,18 +6,20 @@
 namespace MazeGen
 {
 
+enum class Direction
+{
+    North,
+    South,
+    East,
+    West,
+    Count
+};
+
+Direction Opposite(Direction);
+
 class MazeContext
 {
   public:
-    enum class Direction
-    {
-        North,
-        South,
-        East,
-        West,
-        Count,
-    };
-
     typedef std::set<size_t> Set;
     typedef std::shared_ptr<Set> SetPtr;
     typedef size_t (*RandomCellFunc)(size_t maxCell);
@@ -28,6 +30,7 @@ class MazeContext
         size_t from;
         size_t to;
         Direction direction;
+        Direction opposite;
     };
 
     static constexpr size_t InvalidCell = -1;
@@ -51,5 +54,10 @@ class MazeContext
                           RandomDirectionFunc randomDirection = RandomDirectionFuncImpl);
 
     size_t GetAdjacentCell(size_t cell, Direction direction);
+
+    size_t SetCount() const
+    {
+        return setCount;
+    }
 };
 } // namespace MazeGen

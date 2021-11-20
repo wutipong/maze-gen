@@ -16,10 +16,17 @@ struct Cell
 
 struct Maze
 {
-    const int row;
-    const int column;
+    const size_t row;
+    const size_t column;
 
     std::vector<Cell> cells;
-    Maze(int row, int column) : row(row), column(column){};
+    Maze(size_t column, size_t row) : row(row), column(column)
+    {
+        cells.resize(column * row);
+    };
 };
+
+typedef void (*OnProgress)(int current, int total);
+
+Maze Generate(size_t column, size_t row, OnProgress onProgressCallback = nullptr);
 } // namespace MazeGen
