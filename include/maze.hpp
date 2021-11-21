@@ -70,16 +70,14 @@ struct Maze
 size_t RandomCellFuncImpl(size_t maxCell);
 Direction RandomDirectionFuncImpl();
 
-static void NullOnProgress(int current, int total)
+struct GenerateOptions
 {
-}
+    OnProgress onProgressCallback = [](int current, int total) {};
+    LogFunc logFunc = [](size_t from, size_t to) {};
+    RandomCellFunc randomCellFunc = RandomCellFuncImpl;
+    RandomDirectionFunc randomDirectionFunc = RandomDirectionFuncImpl;
+};
 
-static void NullLogFunc(size_t from, size_t to)
-{
-}
-
-Maze Generate(size_t column, size_t row, OnProgress onProgressCallback = NullOnProgress, LogFunc log = NullLogFunc,
-              RandomCellFunc randomCell = RandomCellFuncImpl,
-              RandomDirectionFunc randomDirection = RandomDirectionFuncImpl);
+Maze Generate(size_t column, size_t row, GenerateOptions options = {});
 
 } // namespace MazeGen

@@ -29,9 +29,10 @@ void MazeGen::Connect(Cell &from, Cell &to, Direction direction)
     from.pConnectedCells[static_cast<size_t>(direction)] = &to;
 }
 
-Maze MazeGen::Generate(size_t column, size_t row, OnProgress onProgressCallback, LogFunc log, RandomCellFunc randomCell,
-                       RandomDirectionFunc randomDirection)
+Maze MazeGen::Generate(size_t column, size_t row, GenerateOptions options)
 {
+    auto &[onProgressCallback, log, randomCell, randomDirection] = options;
+
     Maze maze{column, row};
     MazeContext ctx = MazeContext{column, row};
     int progress = 0;
