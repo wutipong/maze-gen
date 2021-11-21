@@ -1,8 +1,27 @@
 #include "maze_context.hpp"
-#include <random>
 #include <set>
 
 using namespace MazeGen;
+
+namespace
+{
+Direction Opposite(Direction direction)
+{
+    switch (direction)
+    {
+    case Direction::North:
+        return Direction::South;
+    case Direction::South:
+        return Direction::North;
+    case Direction::East:
+        return Direction::West;
+    case Direction::West:
+        return Direction::East;
+    }
+
+    return Direction::Count;
+}
+} // namespace
 
 MazeContext::MazeContext(size_t column, size_t row)
     : row(row), column(column), cellCount(row * column), setCount(cellCount)
@@ -28,7 +47,7 @@ bool MazeContext::TryJoinSet(size_t to, size_t from)
     auto &toSet = disjointSets[to];
     auto &fromSet = disjointSets[from];
 
-    for (auto &c : *fromSet)
+    for (auto c : *fromSet)
     {
         if (toSet->find(c) != toSet->end())
         {
@@ -38,7 +57,13 @@ bool MazeContext::TryJoinSet(size_t to, size_t from)
 
     toSet->insert(fromSet->begin(), fromSet->end());
 
-    fromSet = toSet;
+    auto destSet = *fromSet;
+
+    for (auto c : destSet)
+    {
+        disjointSets[c] = toSet;
+    }
+
     setCount = setCount - 1;
 
     return true;
@@ -79,26 +104,6 @@ size_t MazeContext::GetAdjacentCell(size_t cell, Direction direction)
     return (y * column) + x;
 }
 
-size_t MazeContext::RandomCellFuncImpl(size_t maxCell)
-{
-    static std::random_device r;
-
-    std::default_random_engine e(r());
-    std::uniform_int_distribution<size_t> uniform_dist(0, maxCell);
-
-    return uniform_dist(e);
-}
-
-Direction MazeContext::RandomDirectionFuncImpl()
-{
-    static std::random_device r;
-
-    std::default_random_engine e(r());
-    std::uniform_int_distribution<int> uniform_dist(0, static_cast<size_t>(Direction::Count));
-
-    return static_cast<Direction>(uniform_dist(e));
-}
-
 MazeContext::JoinResult MazeContext::RandomJoin(RandomCellFunc randomCell, RandomDirectionFunc randomDirection)
 {
     while (true)
@@ -111,21 +116,4 @@ MazeContext::JoinResult MazeContext::RandomJoin(RandomCellFunc randomCell, Rando
             return {fromCell, toCell, direction, Opposite(direction)};
         }
     }
-}
-
-Direction MazeGen::Opposite(Direction direction)
-{
-    switch (direction)
-    {
-    case Direction::North:
-        return Direction::South;
-    case Direction::South:
-        return Direction::North;
-    case Direction::East:
-        return Direction::West;
-    case Direction::West:
-        return Direction::East;
-    }
-
-    return Direction::Count;
 }

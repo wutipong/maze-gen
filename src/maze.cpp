@@ -1,56 +1,36 @@
-#include <maze.hpp>
-#include <maze_context.hpp>
+#include "maze.hpp"
+#include "maze_context.hpp"
+
+#include <random>
 
 using namespace MazeGen;
 
-namespace
-{
-Cell *&Adjacent(Cell &cell, Direction direction)
+void MazeGen::Connect(Cell &from, Cell &to, Direction direction)
 {
     switch (direction)
     {
     case Direction::North:
-        return cell.pNorth;
-
-    case Direction::South:
-        return cell.pSouth;
-
-    case Direction::East:
-        return cell.pEast;
-
-    case Direction::West:
-        return cell.pWest;
-    }
-
-    throw 0;
-}
-
-void AddConnection(Cell &from, Cell &to, Direction direction)
-{
-    switch (direction)
-    {
-    case Direction::North:
-        from.connections |= MazeGen::ToNorth;
+        from.flags |= MazeGen::ConnectedToNorth;
         break;
 
     case Direction::South:
-        from.connections |= MazeGen::ToSouth;
+        from.flags |= MazeGen::ConnectedToSouth;
         break;
 
     case Direction::East:
-        from.connections |= MazeGen::ToEast;
+        from.flags |= MazeGen::ConnectedToEast;
         break;
 
     case Direction::West:
-        from.connections |= MazeGen::ToWest;
+        from.flags |= MazeGen::ConnectedToWest;
         break;
     }
 
-    Adjacent(from, direction) = &to;
+    from.pConnectedCells[static_cast<size_t>(direction)] = &to;
 }
-} // namespace
 
-Maze MazeGen::Generate(size_t column, size_t row, OnProgress onProgressCallback)
+Maze MazeGen::Generate(size_t column, size_t row, OnProgress onProgressCallback, LogFunc log, RandomCellFunc randomCell,
+                       RandomDirectionFunc randomDirection)
 {
     Maze maze{column, row};
     MazeContext ctx = MazeContext{column, row};
@@ -59,20 +39,49 @@ Maze MazeGen::Generate(size_t column, size_t row, OnProgress onProgressCallback)
 
     for (progress = 0; ctx.SetCount() != 1; progress++)
     {
-        if (onProgressCallback != nullptr)
-            onProgressCallback(progress, total);
+        onProgressCallback(progress, total);
 
-        auto [from, to, direction, opposite] = ctx.RandomJoin();
+        auto [from, to, direction, opposite] = ctx.RandomJoin(randomCell, randomDirection);
+
+        log(from, to);
 
         auto &fromCell = maze.cells[from];
         auto &toCell = maze.cells[to];
 
-        AddConnection(fromCell, toCell, direction);
-        AddConnection(toCell, fromCell, opposite);
+        Connect(fromCell, toCell, direction);
+        Connect(toCell, fromCell, opposite);
     }
 
-    if (onProgressCallback != nullptr)
-        onProgressCallback(total, total);
+    onProgressCallback(total, total);
 
     return maze;
+}
+
+Cell *MazeGen::Cell::ConnectedCell(Direction direction)
+{
+    return pConnectedCells[static_cast<int>(direction)];
+}
+
+size_t MazeGen::RandomCellFuncImpl(size_t maxCell)
+{
+    static std::random_device r;
+
+    std::default_random_engine e(r());
+
+    // maximum value is exclusive.
+    std::uniform_int_distribution<size_t> uniform_dist(0, maxCell - 1);
+
+    return uniform_dist(e);
+}
+
+Direction MazeGen::RandomDirectionFuncImpl()
+{
+    static std::random_device r;
+
+    std::default_random_engine e(r());
+
+    // maximum value is exclusive.
+    std::uniform_int_distribution<int> uniform_dist(0, static_cast<size_t>(Direction::Count) - 1);
+
+    return static_cast<Direction>(uniform_dist(e));
 }

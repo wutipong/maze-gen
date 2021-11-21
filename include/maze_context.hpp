@@ -1,29 +1,15 @@
-#include <set>
+#include "maze.hpp"
 #include <memory>
+#include <set>
 #include <vector>
-
 
 namespace MazeGen
 {
-
-enum class Direction
-{
-    North,
-    South,
-    East,
-    West,
-    Count
-};
-
-Direction Opposite(Direction);
-
 class MazeContext
 {
   public:
     typedef std::set<size_t> Set;
     typedef std::shared_ptr<Set> SetPtr;
-    typedef size_t (*RandomCellFunc)(size_t maxCell);
-    typedef Direction (*RandomDirectionFunc)();
 
     struct JoinResult
     {
@@ -44,9 +30,6 @@ class MazeContext
     int setCount;
 
   public:
-    static size_t RandomCellFuncImpl(size_t maxCell);
-    static Direction RandomDirectionFuncImpl();
-
     MazeContext(size_t column, size_t row);
     bool TryJoinSet(size_t to, size_t from);
 
