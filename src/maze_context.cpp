@@ -3,26 +3,6 @@
 
 using namespace MazeGen;
 
-namespace
-{
-Direction Opposite(Direction direction)
-{
-    switch (direction)
-    {
-    case Direction::North:
-        return Direction::South;
-    case Direction::South:
-        return Direction::North;
-    case Direction::East:
-        return Direction::West;
-    case Direction::West:
-        return Direction::East;
-    }
-
-    return Direction::Count;
-}
-} // namespace
-
 MazeContext::MazeContext(size_t column, size_t row)
     : row(row), column(column), cellCount(row * column), setCount(cellCount)
 {

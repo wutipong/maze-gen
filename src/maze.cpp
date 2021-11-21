@@ -5,6 +5,23 @@
 
 using namespace MazeGen;
 
+Direction MazeGen::Opposite(Direction direction)
+{
+    switch (direction)
+    {
+    case Direction::North:
+        return Direction::South;
+    case Direction::South:
+        return Direction::North;
+    case Direction::East:
+        return Direction::West;
+    case Direction::West:
+        return Direction::East;
+    }
+
+    return Direction::Invalid;
+}
+
 void MazeGen::Connect(Cell &from, Cell &to, Direction direction)
 {
     switch (direction)

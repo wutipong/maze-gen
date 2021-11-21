@@ -15,13 +15,13 @@ add_library(
     maze-gen 
     src/maze.cpp
     src/maze_context.cpp
-    
+    src/maze_path.cpp
 )
+
 target_include_directories(maze-gen PUBLIC include)
 
 # Tests
 find_package(Catch2 CONFIG REQUIRED)
-find_package(magic_enum CONFIG REQUIRED)
 
 add_executable(
     tests 
@@ -29,5 +29,5 @@ add_executable(
     test/maze.cpp
     test/maze_context.cpp
 )
-target_link_libraries(tests PRIVATE Catch2::Catch2 magic_enum::magic_enum maze-gen)
+target_link_libraries(tests PRIVATE Catch2::Catch2 maze-gen)
 target_include_directories(tests PRIVATE Catch2::Catch2)

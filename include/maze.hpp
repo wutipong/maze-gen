@@ -13,7 +13,8 @@ enum class Direction
     South,
     East,
     West,
-    Count
+    Count,
+    Invalid = -1
 };
 
 typedef size_t CellFlags;
@@ -38,6 +39,8 @@ typedef size_t (*RandomCellFunc)(size_t maxCell);
 typedef Direction (*RandomDirectionFunc)();
 typedef void (*OnProgress)(int current, int total);
 typedef void (*LogFunc)(size_t from, size_t to);
+
+Direction Opposite(Direction direction);
 
 class Cell
 {
