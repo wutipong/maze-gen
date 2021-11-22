@@ -15,29 +15,33 @@ TEST_CASE("Generate", "[Maze]")
 
         if (x == 0)
         {
-            REQUIRE((m.cells[i].Flags() & MazeGen::ConnectedToWest) == 0);
-            REQUIRE(m.cells[i].ConnectedCell(Direction::West) == nullptr);
+            INFO("Cell [" << x << "," << y << "]");
+            REQUIRE((m.At(i).Flags() & MazeGen::ConnectedToWest) == 0);
+            REQUIRE(m.At(i).ConnectedCell(Direction::West) == InvalidCell);
         }
 
         if (x == column - 1)
         {
-            REQUIRE((m.cells[i].Flags() & MazeGen::ConnectedToEast) == 0);
-            REQUIRE(m.cells[i].ConnectedCell(Direction::East) == nullptr);
+            INFO("Cell [" << x << "," << y << "]");
+            REQUIRE((m.At(i).Flags() & MazeGen::ConnectedToEast) == 0);
+            REQUIRE(m.At(i).ConnectedCell(Direction::East) == InvalidCell);
         }
 
         if (y == 0)
         {
-            REQUIRE((m.cells[i].Flags() & MazeGen::ConnectedToNorth) == 0);
-            REQUIRE(m.cells[i].ConnectedCell(Direction::North) == nullptr);
+            INFO("Cell [" << x << "," << y << "]");
+            REQUIRE((m.At(i).Flags() & MazeGen::ConnectedToNorth) == 0);
+            REQUIRE(m.At(i).ConnectedCell(Direction::North) == InvalidCell);
         }
 
         if (y == row - 1)
         {
-            REQUIRE((m.cells[i].Flags() & MazeGen::ConnectedToSouth) == 0);
-            REQUIRE(m.cells[i].ConnectedCell(Direction::South) == nullptr);
+            INFO("Cell [" << x << "," << y << "]");
+            REQUIRE((m.At(i).Flags() & MazeGen::ConnectedToSouth) == 0);
+            REQUIRE(m.At(i).ConnectedCell(Direction::South) == InvalidCell);
         }
 
         INFO("cell index " << i);
-        REQUIRE(m.cells[i].Flags() != 0);
+        REQUIRE(m.At(i).Flags() != 0);
     }
 }

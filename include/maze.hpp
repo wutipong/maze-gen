@@ -17,6 +17,8 @@ enum class Direction
     Invalid = -1
 };
 
+static constexpr size_t InvalidCell = -1;
+
 typedef size_t CellFlags;
 
 constexpr CellFlags ConnectedToNorth = 1;
@@ -45,29 +47,50 @@ Direction Opposite(Direction direction);
 class Cell
 {
   public:
-    Cell *ConnectedCell(Direction direction);
+    Cell(size_t id) : id(id){};
+    size_t ConnectedCell(Direction direction);
     CellFlags Flags() const
     {
         return flags;
     }
 
+    const size_t Id() const
+    {
+        return id;
+    }
+
     friend void Connect(Cell &from, Cell &to, Direction direction);
 
   private:
-    Cell *pConnectedCells[static_cast<size_t>(Direction::Count)] = {nullptr};
+    const size_t id;
+    size_t connectedCells[static_cast<size_t>(Direction::Count)] = {InvalidCell, InvalidCell, InvalidCell, InvalidCell};
     CellFlags flags = 0;
 };
 
-struct Maze
+class Maze
 {
+  public:
     const size_t row;
     const size_t column;
+    const size_t cellCount;
 
-    std::vector<Cell> cells;
-    Maze(size_t column, size_t row) : row(row), column(column)
+    Maze(size_t column, size_t row) : row(row), column(column), cellCount(row * column)
     {
-        cells.resize(column * row);
+        for (size_t i = 0; i < cellCount; i++)
+        {
+            cells.emplace_back(i);
+        }
     };
+
+    Cell At(size_t id) const
+    {
+        return cells[id];
+    }
+
+    size_t AdjacentCellID(size_t id, Direction direction) const;
+
+  private:
+    std::vector<Cell> cells;
 };
 
 size_t RandomCellFuncImpl(size_t maxCell);

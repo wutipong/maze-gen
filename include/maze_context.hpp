@@ -19,8 +19,6 @@ class MazeContext
         Direction opposite;
     };
 
-    static constexpr size_t InvalidCell = -1;
-
     const size_t row;
     const size_t column;
     const size_t cellCount;

@@ -71,6 +71,8 @@ Path MazeGen::FindPath(Maze &m, size_t from, size_t to)
 {
     size_t current = from;
     Path p;
+    return p;
+    /*
     PathNodeStack stack(p);
 
     stack.push(PathNode{.cell = from, .fromDirection = Direction::Invalid, .toDirection = Direction::Invalid});
@@ -113,4 +115,5 @@ Path MazeGen::FindPath(Maze &m, size_t from, size_t to)
     }
 
     return p;
+    */
 }
