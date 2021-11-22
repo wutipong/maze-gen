@@ -28,6 +28,6 @@ add_executable(
     test/main.cpp 
     test/maze.cpp
     test/maze_context.cpp
-)
+ "test/maze_path.cpp")
 target_link_libraries(tests PRIVATE Catch2::Catch2 maze-gen)
 target_include_directories(tests PRIVATE Catch2::Catch2)

@@ -6,7 +6,8 @@ namespace MazeGen
 struct PathNode
 {
     size_t cell;
-    Direction direction;
+    Direction fromDirection;
+    Direction toDirection;
 };
 
 typedef std::deque<PathNode> Path;

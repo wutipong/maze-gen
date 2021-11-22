@@ -1,18 +1,12 @@
 #include "maze.hpp"
 #include <catch2/catch.hpp>
-#include <iostream>
 
 using namespace MazeGen;
 TEST_CASE("Generate", "[Maze]")
 {
     constexpr size_t column = 50, row = 50;
 
-    auto m = MazeGen::Generate(
-        column, row,
-        {
-            .onProgressCallback = [](int current, int total) { std::cout << current << "/" << total << std::endl; },
-            .logFunc = [](size_t from, size_t to) { std::cout << "connecting " << from << " to " << to << std::endl; },
-        });
+    auto m = MazeGen::Generate(column, row);
 
     for (int i = 0; i < row * column; i++)
     {
