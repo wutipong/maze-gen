@@ -1,11 +1,9 @@
 #include "maze_path.hpp"
 
-#include <stack>
 #include <iostream>
+#include <stack>
 
 using namespace MazeGen;
-
-typedef std::stack<PathNode, Path> PathNodeStack;
 
 namespace
 {
@@ -17,10 +15,10 @@ Direction Next(Direction direction)
     case Direction::Invalid:
         return Direction::North;
     case Direction::North:
-        return Direction::South;
-    case Direction::South:
         return Direction::East;
     case Direction::East:
+        return Direction::South;
+    case Direction::South:
         return Direction::West;
     case Direction::West:
         return Direction::Invalid;
@@ -28,92 +26,51 @@ Direction Next(Direction direction)
 
     return Direction::Invalid;
 }
-
-size_t GetAdjacentCell(size_t cell, size_t row, size_t column, Direction direction)
-{
-    auto cellCount = row * column;
-
-    if (cell < 0 || cell >= cellCount)
-        return InvalidCell;
-
-    size_t x = cell % column;
-    size_t y = cell / column;
-
-    switch (direction)
-    {
-    case Direction::North:
-        y = y - 1;
-        break;
-
-    case Direction::South:
-        y = y + 1;
-        break;
-
-    case Direction::West:
-        x = x - 1;
-        break;
-    case Direction::East:
-        x = x + 1;
-        break;
-    }
-
-    if (x < 0 || x >= column)
-        return InvalidCell;
-
-    if (y < 0 || y >= row)
-        return InvalidCell;
-
-    return (y * column) + x;
-}
 } // namespace
 
 Path MazeGen::FindPath(Maze &m, size_t from, size_t to)
 {
-    size_t current = from;
     Path p;
-    return p;
-    /*
-    PathNodeStack stack(p);
 
-    stack.push(PathNode{.cell = from, .fromDirection = Direction::Invalid, .toDirection = Direction::Invalid});
+    p.push_back(PathNode{.cell = from, .fromDirection = Direction::Invalid, .toDirection = Direction::Invalid});
 
     if (from == to)
     {
         return p;
     }
 
-    while (current != to)
+    while (true)
     {
-        auto &current = stack.top();
-        auto &cell = m.cells[current.cell];
+        auto &currentNode = p.back();
+        if (currentNode.cell == to)
+            break;
 
-        current.toDirection = Next(current.toDirection);
-        if (current.toDirection == Direction::Invalid)
+        auto &cell = m.At(currentNode.cell);
+
+        currentNode.toDirection = Next(currentNode.toDirection);
+        if (currentNode.toDirection == Direction::Invalid)
         {
-            stack.pop();
+            p.pop_back();
             continue;
         }
 
-        if (current.toDirection == current.fromDirection)
-        {
-            continue;
-        }
-
-        auto nextCell = cell.ConnectedCell(current.toDirection);
-        if (nextCell == nullptr)
+        if (currentNode.toDirection == currentNode.fromDirection)
         {
             continue;
         }
 
-        PathNode next{.cell = GetAdjacentCell(current.cell, m.row, m.column, current.toDirection),
-                      .fromDirection = Opposite(current.toDirection),
+        auto nextCell = cell.ConnectedCell(currentNode.toDirection);
+        if (nextCell == InvalidCell)
+        {
+            continue;
+        }
+
+        PathNode next{.cell = m.AdjacentCellID(currentNode.cell, currentNode.toDirection),
+                      .fromDirection = Opposite(currentNode.toDirection),
                       .toDirection = Direction::Invalid};
 
-        std::cout << "going to " << next.cell << std::endl;
-
-        stack.push(next);
+        p.push_back(next);
     }
 
     return p;
-    */
 }

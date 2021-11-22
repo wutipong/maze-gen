@@ -1,6 +1,6 @@
 #include "maze.hpp"
 
-#include <deque>
+#include <vector>
 namespace MazeGen
 {
 struct PathNode
@@ -10,7 +10,7 @@ struct PathNode
     Direction toDirection;
 };
 
-typedef std::deque<PathNode> Path;
+typedef std::vector<PathNode> Path;
 
 Path FindPath(Maze &m, size_t from, size_t to);
 }
