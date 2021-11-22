@@ -82,6 +82,11 @@ class Maze
         }
     };
 
+    Cell& At(size_t id) 
+    {
+        return cells[id];
+    }
+
     Cell At(size_t id) const
     {
         return cells[id];

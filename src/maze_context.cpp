@@ -37,7 +37,7 @@ bool MazeContext::TryJoinSet(size_t to, size_t from)
 
     toSet->insert(fromSet->begin(), fromSet->end());
 
-    auto destSet = *fromSet;
+    Set destSet = *fromSet;
 
     for (auto c : destSet)
     {

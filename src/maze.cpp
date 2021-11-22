@@ -63,8 +63,8 @@ Maze MazeGen::Generate(size_t column, size_t row, GenerateOptions options)
 
         log(from, to);
 
-        auto fromCell = maze.At(from);
-        auto toCell = maze.At(to);
+        auto &fromCell = maze.At(from);
+        auto &toCell = maze.At(to);
 
         Connect(fromCell, toCell, direction);
         Connect(toCell, fromCell, opposite);
