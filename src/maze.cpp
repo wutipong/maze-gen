@@ -43,10 +43,10 @@ void MazeGen::Connect(Cell &from, Cell &to, Direction direction)
         break;
     }
 
-    from.connectedCells[static_cast<size_t>(direction)] = to.Id();
+    from.connectedCells[static_cast<int>(direction)] = to.Id();
 }
 
-Maze MazeGen::Generate(size_t column, size_t row, GenerateOptions options)
+Maze MazeGen::Generate(int column, int row, GenerateOptions options)
 {
     auto &[onProgressCallback, log, randomCell, randomDirection] = options;
 
@@ -75,19 +75,19 @@ Maze MazeGen::Generate(size_t column, size_t row, GenerateOptions options)
     return maze;
 }
 
-size_t MazeGen::Cell::ConnectedCell(Direction direction)
+int MazeGen::Cell::ConnectedCell(Direction direction)
 {
     return connectedCells[static_cast<int>(direction)];
 }
 
-size_t MazeGen::RandomCellFuncImpl(size_t maxCell)
+int MazeGen::RandomCellFuncImpl(int maxCell)
 {
     static std::random_device r;
 
     std::default_random_engine e(r());
 
     // maximum value is exclusive.
-    std::uniform_int_distribution<size_t> uniform_dist(0, maxCell - 1);
+    std::uniform_int_distribution<int> uniform_dist(0, maxCell - 1);
 
     return uniform_dist(e);
 }
@@ -99,18 +99,18 @@ Direction MazeGen::RandomDirectionFuncImpl()
     std::default_random_engine e(r());
 
     // maximum value is exclusive.
-    std::uniform_int_distribution<int> uniform_dist(0, static_cast<size_t>(Direction::Count) - 1);
+    std::uniform_int_distribution<int> uniform_dist(0, static_cast<int>(Direction::Count) - 1);
 
     return static_cast<Direction>(uniform_dist(e));
 }
 
-size_t MazeGen::Maze::AdjacentCellID(size_t id, Direction direction) const
+int MazeGen::Maze::AdjacentCellID(int id, Direction direction) const
 {
     if (id < 0 || id >= cellCount)
         return InvalidCell;
 
-    size_t x = id % column;
-    size_t y = id / column;
+    int x = id % column;
+    int y = id / column;
 
     switch (direction)
     {

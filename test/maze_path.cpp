@@ -7,7 +7,7 @@ using namespace MazeGen;
 
 TEST_CASE("FindPath", "[MazePath]")
 {
-    constexpr size_t column = 5, row = 5;
+    constexpr int column = 5, row = 5;
     auto m = MazeGen::Generate(column, row);
 
     auto path = MazeGen::FindPath(m, 2, 20);
@@ -19,7 +19,7 @@ TEST_CASE("FindPath", "[MazePath]")
 
 TEST_CASE("FindPath -- Same Cell", "[MazePath]")
 {
-    constexpr size_t column = 5, row = 5;
+    constexpr int column = 5, row = 5;
     auto m = MazeGen::Generate(column, row);
 
     auto path = MazeGen::FindPath(m, 20, 20);

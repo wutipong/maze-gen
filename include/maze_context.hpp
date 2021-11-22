@@ -8,35 +8,35 @@ namespace MazeGen
 class MazeContext
 {
   public:
-    typedef std::set<size_t> Set;
+    typedef std::set<int> Set;
     typedef std::shared_ptr<Set> SetPtr;
 
     struct JoinResult
     {
-        size_t from;
-        size_t to;
+        int from;
+        int to;
         Direction direction;
         Direction opposite;
     };
 
-    const size_t row;
-    const size_t column;
-    const size_t cellCount;
+    const int row;
+    const int column;
+    const int cellCount;
 
   private:
     std::vector<SetPtr> disjointSets;
     int setCount;
 
   public:
-    MazeContext(size_t column, size_t row);
-    bool TryJoinSet(size_t to, size_t from);
+    MazeContext(int column, int row);
+    bool TryJoinSet(int to, int from);
 
     JoinResult RandomJoin(RandomCellFunc randomCell = RandomCellFuncImpl,
                           RandomDirectionFunc randomDirection = RandomDirectionFuncImpl);
 
-    size_t GetAdjacentCell(size_t cell, Direction direction);
+    int GetAdjacentCell(int cell, Direction direction);
 
-    size_t SetCount() const
+    int SetCount() const
     {
         return setCount;
     }

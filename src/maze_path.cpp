@@ -7,7 +7,6 @@ using namespace MazeGen;
 
 namespace
 {
-constexpr size_t InvalidCell = -1;
 Direction Next(Direction direction)
 {
     switch (direction)
@@ -28,7 +27,7 @@ Direction Next(Direction direction)
 }
 } // namespace
 
-Path MazeGen::FindPath(Maze &m, size_t from, size_t to)
+Path MazeGen::FindPath(Maze &m, int from, int to)
 {
     Path p;
 

@@ -17,9 +17,9 @@ enum class Direction
     Invalid = -1
 };
 
-static constexpr size_t InvalidCell = -1;
+constexpr int InvalidCell = -1;
 
-typedef size_t CellFlags;
+typedef int CellFlags;
 
 constexpr CellFlags ConnectedToNorth = 1;
 constexpr CellFlags ConnectedToSouth = 2;
@@ -37,24 +37,24 @@ constexpr CellFlags ConnectedToNorthEastAndWest = ConnectedToNorth | ConnectedTo
 constexpr CellFlags ConnectedToSouthEastAndWest = ConnectedToSouth | ConnectedToEast | ConnectedToWest;
 constexpr CellFlags ConnectedToAll = ConnectedToNorth | ConnectedToSouth | ConnectedToEast | ConnectedToWest;
 
-typedef size_t (*RandomCellFunc)(size_t maxCell);
+typedef int (*RandomCellFunc)(int maxCell);
 typedef Direction (*RandomDirectionFunc)();
 typedef void (*OnProgress)(int current, int total);
-typedef void (*LogFunc)(size_t from, size_t to);
+typedef void (*LogFunc)(int from, int to);
 
 Direction Opposite(Direction direction);
 
 class Cell
 {
   public:
-    Cell(size_t id) : id(id){};
-    size_t ConnectedCell(Direction direction);
+    Cell(int id) : id(id){};
+    int ConnectedCell(Direction direction);
     CellFlags Flags() const
     {
         return flags;
     }
 
-    const size_t Id() const
+    const int Id() const
     {
         return id;
     }
@@ -62,53 +62,53 @@ class Cell
     friend void Connect(Cell &from, Cell &to, Direction direction);
 
   private:
-    const size_t id;
-    size_t connectedCells[static_cast<size_t>(Direction::Count)] = {InvalidCell, InvalidCell, InvalidCell, InvalidCell};
+    const int id;
+    int connectedCells[static_cast<int>(Direction::Count)] = {InvalidCell, InvalidCell, InvalidCell, InvalidCell};
     CellFlags flags = 0;
 };
 
 class Maze
 {
   public:
-    const size_t row;
-    const size_t column;
-    const size_t cellCount;
+    const int row;
+    const int column;
+    const int cellCount;
 
-    Maze(size_t column, size_t row) : row(row), column(column), cellCount(row * column)
+    Maze(int column, int row) : row(row), column(column), cellCount(row * column)
     {
-        for (size_t i = 0; i < cellCount; i++)
+        for (int i = 0; i < cellCount; i++)
         {
             cells.emplace_back(i);
         }
     };
 
-    Cell& At(size_t id) 
+    Cell& At(int id) 
     {
         return cells[id];
     }
 
-    Cell At(size_t id) const
+    Cell At(int id) const
     {
         return cells[id];
     }
 
-    size_t AdjacentCellID(size_t id, Direction direction) const;
+    int AdjacentCellID(int id, Direction direction) const;
 
   private:
     std::vector<Cell> cells;
 };
 
-size_t RandomCellFuncImpl(size_t maxCell);
+int RandomCellFuncImpl(int maxCell);
 Direction RandomDirectionFuncImpl();
 
 struct GenerateOptions
 {
     OnProgress onProgressCallback = [](int current, int total) {};
-    LogFunc logFunc = [](size_t from, size_t to) {};
+    LogFunc logFunc = [](int from, int to) {};
     RandomCellFunc randomCellFunc = RandomCellFuncImpl;
     RandomDirectionFunc randomDirectionFunc = RandomDirectionFuncImpl;
 };
 
-Maze Generate(size_t column, size_t row, GenerateOptions options = {});
+Maze Generate(int column, int row, GenerateOptions options = {});
 
 } // namespace MazeGen

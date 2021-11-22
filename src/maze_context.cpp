@@ -3,11 +3,11 @@
 
 using namespace MazeGen;
 
-MazeContext::MazeContext(size_t column, size_t row)
+MazeContext::MazeContext(int column, int row)
     : row(row), column(column), cellCount(row * column), setCount(cellCount)
 {
     disjointSets.reserve(cellCount);
-    for (size_t i = 0; i < cellCount; i++)
+    for (int i = 0; i < cellCount; i++)
     {
         auto ptr = std::make_shared<Set>();
         ptr->emplace(i);
@@ -16,7 +16,7 @@ MazeContext::MazeContext(size_t column, size_t row)
     }
 }
 
-bool MazeContext::TryJoinSet(size_t to, size_t from)
+bool MazeContext::TryJoinSet(int to, int from)
 {
     if (to == InvalidCell)
         return false;
@@ -49,13 +49,13 @@ bool MazeContext::TryJoinSet(size_t to, size_t from)
     return true;
 }
 
-size_t MazeContext::GetAdjacentCell(size_t cell, Direction direction)
+int MazeContext::GetAdjacentCell(int cell, Direction direction)
 {
     if (cell < 0 || cell >= cellCount)
         return InvalidCell;
 
-    size_t x = cell % column;
-    size_t y = cell / column;
+    int x = cell % column;
+    int y = cell / column;
 
     switch (direction)
     {

@@ -4,7 +4,7 @@
 using namespace MazeGen;
 TEST_CASE("Generate", "[Maze]")
 {
-    constexpr size_t column = 50, row = 50;
+    constexpr int column = 50, row = 50;
 
     auto m = MazeGen::Generate(column, row);
 
