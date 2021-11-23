@@ -12,5 +12,9 @@ struct PathNode
 
 typedef std::vector<PathNode> Path;
 
-Path FindPath(Maze &m, int from, int to);
+// Depth-first search
+Path FindPathDFS(Maze &m, int from, int to);
+
+// Breadth-first search
+Path FindPathBFS(Maze &m, int from, int to);
 }
