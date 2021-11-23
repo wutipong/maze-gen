@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <memory>
 #include <set>
 #include <utility>
@@ -19,10 +20,10 @@ enum class Direction
 
 constexpr int InvalidCell = -1;
 
-typedef int (*RandomCellFunc)(int maxCell);
-typedef Direction (*RandomDirectionFunc)();
-typedef void (*OnProgress)(int current, int total);
-typedef void (*LogFunc)(int from, int to);
+typedef std::function<int(int maxCell)> RandomCellFunc;
+typedef std::function<Direction()> RandomDirectionFunc;
+typedef std::function<void(int current, int total)> OnProgress;
+typedef std::function<void (int from, int to)> LogFunc;
 
 Direction Opposite(Direction direction);
 
@@ -31,7 +32,7 @@ class Cell
   public:
     Cell(int id) : id(id){};
     int ConnectedCell(Direction direction);
-    
+
     const int Id() const
     {
         return id;
@@ -59,7 +60,7 @@ class Maze
         }
     };
 
-    Cell& At(int id) 
+    Cell &At(int id)
     {
         return cells[id];
     }
@@ -67,6 +68,16 @@ class Maze
     Cell At(int id) const
     {
         return cells[id];
+    }
+
+    Cell &operator[](int index)
+    {
+        return At(index);
+    }
+
+    Cell operator[](int index) const
+    {
+        return At(index);
     }
 
     int AdjacentCellID(int id, Direction direction) const;
