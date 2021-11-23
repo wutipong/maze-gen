@@ -24,25 +24,6 @@ Direction MazeGen::Opposite(Direction direction)
 
 void MazeGen::Connect(Cell &from, Cell &to, Direction direction)
 {
-    switch (direction)
-    {
-    case Direction::North:
-        from.flags |= MazeGen::ConnectedToNorth;
-        break;
-
-    case Direction::South:
-        from.flags |= MazeGen::ConnectedToSouth;
-        break;
-
-    case Direction::East:
-        from.flags |= MazeGen::ConnectedToEast;
-        break;
-
-    case Direction::West:
-        from.flags |= MazeGen::ConnectedToWest;
-        break;
-    }
-
     from.connectedCells[static_cast<int>(direction)] = to.Id();
 }
 
