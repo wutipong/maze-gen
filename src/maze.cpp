@@ -90,8 +90,7 @@ int MazeGen::Maze::AdjacentCellID(int id, Direction direction) const
     if (id < 0 || id >= cellCount)
         return InvalidCell;
 
-    int x = id % column;
-    int y = id / column;
+    auto [x, y] = CellPosition(id);
 
     switch (direction)
     {
@@ -118,4 +117,12 @@ int MazeGen::Maze::AdjacentCellID(int id, Direction direction) const
         return InvalidCell;
 
     return (y * column) + x;
+}
+
+CellPosition MazeGen::Maze::CellPosition(int id) const
+{
+    int x = id % column;
+    int y = id / column;
+
+    return {.column = x, .row = y};
 }

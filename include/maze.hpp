@@ -45,6 +45,12 @@ class Cell
     int connectedCells[static_cast<int>(Direction::Count)] = {InvalidCell, InvalidCell, InvalidCell, InvalidCell};
 };
 
+struct CellPosition
+{
+    int column;
+    int row;
+};
+
 class Maze
 {
   public:
@@ -81,6 +87,8 @@ class Maze
     }
 
     int AdjacentCellID(int id, Direction direction) const;
+
+    CellPosition CellPosition(int id) const;
 
   private:
     std::vector<Cell> cells;

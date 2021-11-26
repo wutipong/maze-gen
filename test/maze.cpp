@@ -10,8 +10,7 @@ TEST_CASE("Generate", "[Maze]")
 
     for (int i = 0; i < row * column; i++)
     {
-        int x = i % column;
-        int y = i / column;
+        auto [x, y] = m.CellPosition(i);
 
         INFO("Cell #" << i << " [" << x << ", " << y << "]");
         if (x == 0)
