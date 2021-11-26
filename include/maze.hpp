@@ -1,5 +1,4 @@
 #pragma once
-
 #include <memory>
 #include <set>
 #include <utility>
@@ -20,28 +19,10 @@ enum class Direction
 
 constexpr int InvalidCell = -1;
 
-typedef int CellFlags;
-
-constexpr CellFlags ConnectedToNorth = 1;
-constexpr CellFlags ConnectedToSouth = 2;
-constexpr CellFlags ConnectedToEast = 4;
-constexpr CellFlags ConnectedToWest = 8;
-constexpr CellFlags ConnectedToNorthAndSouth = ConnectedToNorth | ConnectedToSouth;
-constexpr CellFlags ConnectedToNorthAndEast = ConnectedToNorth | ConnectedToEast;
-constexpr CellFlags ConnectedToNorthAndWest = ConnectedToNorth | ConnectedToWest;
-constexpr CellFlags ConnectedToSouthAndEast = ConnectedToSouth | ConnectedToEast;
-constexpr CellFlags ConnectedToSouthAndWest = ConnectedToSouth | ConnectedToWest;
-constexpr CellFlags ConnectedToEastAndWest = ConnectedToEast | ConnectedToWest;
-constexpr CellFlags ConnectedToNorthSouthAndEast = ConnectedToNorth | ConnectedToSouth | ConnectedToEast;
-constexpr CellFlags ConnectedToNorthSouthAndWest = ConnectedToNorth | ConnectedToSouth | ConnectedToWest;
-constexpr CellFlags ConnectedToNorthEastAndWest = ConnectedToNorth | ConnectedToEast | ConnectedToWest;
-constexpr CellFlags ConnectedToSouthEastAndWest = ConnectedToSouth | ConnectedToEast | ConnectedToWest;
-constexpr CellFlags ConnectedToAll = ConnectedToNorth | ConnectedToSouth | ConnectedToEast | ConnectedToWest;
-
-typedef int (*RandomCellFunc)(int maxCell);
-typedef Direction (*RandomDirectionFunc)();
-typedef void (*OnProgress)(int current, int total);
-typedef void (*LogFunc)(int from, int to);
+typedef std::function<int(int maxCell)> RandomCellFunc;
+typedef std::function<Direction()> RandomDirectionFunc;
+typedef std::function<void(int current, int total)> OnProgress;
+typedef std::function<void (int from, int to)> LogFunc;
 
 Direction Opposite(Direction direction);
 
@@ -50,10 +31,6 @@ class Cell
   public:
     Cell(int id) : id(id){};
     int ConnectedCell(Direction direction);
-    CellFlags Flags() const
-    {
-        return flags;
-    }
 
     const int Id() const
     {
@@ -65,7 +42,6 @@ class Cell
   private:
     const int id;
     int connectedCells[static_cast<int>(Direction::Count)] = {InvalidCell, InvalidCell, InvalidCell, InvalidCell};
-    CellFlags flags = 0;
 };
 
 class Maze
@@ -83,7 +59,7 @@ class Maze
         }
     };
 
-    Cell& At(int id) 
+    Cell &At(int id)
     {
         return cells[id];
     }
@@ -91,6 +67,16 @@ class Maze
     Cell At(int id) const
     {
         return cells[id];
+    }
+
+    Cell &operator[](int index)
+    {
+        return At(index);
+    }
+
+    Cell operator[](int index) const
+    {
+        return At(index);
     }
 
     int AdjacentCellID(int id, Direction direction) const;

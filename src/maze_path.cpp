@@ -46,7 +46,7 @@ Path MazeGen::FindPathDFS(Maze &m, int from, int to)
         if (currentNode.cell == to)
             break;
 
-        auto &cell = m.At(currentNode.cell);
+        auto &cell = m[currentNode.cell];
 
         currentNode.toDirection = Next(currentNode.toDirection);
         if (currentNode.toDirection == Direction::Invalid)

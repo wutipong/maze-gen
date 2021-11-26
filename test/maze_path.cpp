@@ -1,7 +1,6 @@
 #include "maze.hpp"
 #include "maze_path.hpp"
 #include <catch2/catch.hpp>
-#include <iostream>
 
 using namespace MazeGen;
 
